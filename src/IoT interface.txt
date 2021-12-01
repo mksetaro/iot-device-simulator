@@ -1,0 +1,6 @@
+Public Client IP: 54.72.91.221
+Port: 8883
+IoT endpoint: asqtb44p08n2t-ats.iot.eu-west-1.amazonaws.com
+ClientID: jp_elv
+Topic for elevator response: jp_elv/elv_response
+Certificates: see files in this folder after January 17, 2020
