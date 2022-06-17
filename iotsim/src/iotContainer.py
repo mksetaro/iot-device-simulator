@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import paho.mqtt.client as mqtt
 import importlib
 import json
@@ -7,9 +9,9 @@ import time
 import threading
 import logging
 
+import os
 from os import sys, environ
-sys.path.append(environ['IOT_SIMULATOR_ROOT'])
-import iotconfig as cfg
+import iotsim.config.iotconfig as cfg
 
 sys.path.append(cfg.mqtt_modules['modulesFolder'])
 logging.basicConfig(filename=cfg.logger['logFilePath'], filemode='w', format='%(asctime)s -%(levelname)s- %(message)s', level=cfg.logger['loggerLevel']) 
@@ -97,8 +99,9 @@ class IOTUnit:
         self.registers = unit_cfg['registers']
         self.notifiers = {}
         self.publishers = {}
-        self.subscribers = {}
-        self.init_ssl_context()
+        self.subscribers = {}      
+        if cfg.mqtt_client['use_certificates']:
+            self.init_ssl_context()
         self.init_mqtt_connection()
         self.init_data_publishers(scheduler, unit_cfg['publishers'])
         self.init_data_subscribers(unit_cfg['subscribers'])
@@ -117,7 +120,8 @@ class IOTUnit:
     def init_mqtt_connection(self):
         try:
             self.client = mqtt.Client()
-            self.client.tls_set_context(self.ssl_context)
+            if cfg.mqtt_client['use_certificates']:
+                self.client.tls_set_context(self.ssl_context)
             self.client.connect(cfg.mqtt_client['host'], cfg.mqtt_client['port'])
         except Exception:
             logging.error("init_mqtt_connection failed for %s", self.name)
