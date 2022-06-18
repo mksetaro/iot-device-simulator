@@ -14,7 +14,7 @@ class DataPublisher:
         
     def register_publisher(self, scheduler, cfg):
         try:
-            if self.type == types.PERIODIC_TYPE or self.type == types.SINGLE_SHOT_TYPE:       
+            if self.type == types.PERIODIC_TYPE:       
                 self.execution_timer = cfg['cycle_time_ms']
                 scheduler.every(self.execution_timer/1000).seconds.do(self.run_threaded, self.publish)
             elif self.type == types.NOTIFICATION_TYPE:
@@ -27,8 +27,6 @@ class DataPublisher:
     def run_threaded(self, job_func):
         job_thread = threading.Thread(target = job_func)
         job_thread.start()
-        if self.type == types.SINGLE_SHOT_TYPE:
-            return schedule.CancelJob
 
     def publish(self):
         payload = self.owner.get_register_value(self.register_read_key)
