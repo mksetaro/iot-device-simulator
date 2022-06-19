@@ -28,8 +28,8 @@ class DataSubscriber:
     
     def on_message_data_write(self, client, userdata, message):
         logging.debug("received %(payload)s on topic %(topic)s", {'payload':message.payload,'topic':message.topic})
-        self.owner.set_register_value(self.register_write_key, message.payload)
+        self.owner.set_register_value(self.register_write_key, str(message.payload.decode("utf-8")))
 
     def on_message_request(self, client, userdata, message):
         logging.debug("request %(payload)s received on topic %(topic)s", {'payload':message.payload,'topic':message.topic})
-        self.owner.process_request_threaded(self.module.process_request, message.payload, self.notifier_name)
+        self.owner.process_request_threaded(self.module.process_request, str(message.payload.decode("utf-8")), self.notifier_name)
