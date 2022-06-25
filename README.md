@@ -125,7 +125,6 @@ def process_request(registers, payload, notify_func):
 
 - [ ] Code clean up
 - [ ] Unit testing
-- [ ] Improve documentation
 - [ ] Improve overall abstraction
 - [ ] Improve Python packaging
 - [ ] Refactor project as an IoT Container usable also with physical devices
