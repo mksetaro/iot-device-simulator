@@ -134,6 +134,10 @@ def process_request(registers, payload, notify_func):
 ## Contributors
 
 * [Michelangelo Setaro](https://github.com/mksetaro) 
+* [Crescenzo Di Franco](https://github.com/CreshLab)
+* [Francesco Grassi]()
+* [Daniele Gnani]()
+* [Patrick Lazzarotto]()
   
 ## Contribution
 
