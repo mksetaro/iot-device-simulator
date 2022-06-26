@@ -9,7 +9,9 @@ from datapublisher import DataPublisher
 from datasubscriber import DataSubscriber
 import typedefines as types
 
-class IOTUnit:   
+class IOTUnit:
+    def __init__(self) -> None:
+        pass   
     def __init__(self, unit_cfg, mqtt_cfg, scheduler):
         self.client_cfg = mqtt_cfg
         self.name = unit_cfg['name']
@@ -19,10 +21,10 @@ class IOTUnit:
         self.subscribers = {}      
         if self.client_cfg['use_certificates']:
             self.init_ssl_context()
-        self.init_mqtt_connection()
-        self.init_data_publishers(scheduler, unit_cfg['publishers'])
-        if 'subscribers' in unit_cfg:
-            self.init_data_subscribers(unit_cfg['subscribers'])
+        self.init_mqtt_connection()                                     #step 1 -> init iot client + init ssl context
+        self.init_data_publishers(scheduler, unit_cfg['publishers'])    #step 2 -> init data publisher
+        if 'subscribers' in unit_cfg:                                   #step 3 -> init data subscriber
+            self.init_data_subscribers(unit_cfg['subscribers'])         #step 4 -> init control loop
         self.init_control_loop(scheduler, unit_cfg)
     
     def init_ssl_context(self):
@@ -104,6 +106,32 @@ class IOTUnit:
         req_thread = threading.Thread(target = req_func, args=(self.registers, payload, self.notifiers[notifier_name_key].publish_notification))
         req_thread.start()
 
-class IoTUnitBuilder:
+class IOTUnitBuilder:
     def __init__(self) -> None:
         pass
+    def build_iot_unit(self, cfgFile):
+        iot_unit = IOTUnit()
+        #build_with_ssl_context(iot_unit, cfgfile[certificates])
+        #build_with_iot_client(iot_unit, cfgfile[client-mqtt])
+        #build_with_publishers(iot_unit, cfgfile[publishers])
+        #build_with_subscribers(iot_unit, cfgfile[subscriber])
+        #build_with_control_loop(iot_unit, cfgfile[control_loop])
+        return iot_unit
+    def build_with_ssl_context(self):
+        #TODO build ssl context step 1.a
+        pass
+    def build_with_iot_client(self):
+        #TODO build iot client step 1.b
+        pass
+    def build_with_publishers(self):
+        #TODO build iot publishers step 2
+        pass
+    def build_with_subscribers(self):
+        #TODO build iot subscribers step 3
+        pass
+    def build_with_control_loop(self):
+        #TODO build control loop step 4
+        pass
+
+
+#--> IoTUnit(empty) -> ssl_context() -> IoTUnit(sslcontext) -> iot_client() -> IoTUnit(sslcontext + iotclient) 
