@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from argparse import Namespace
 import paho.mqtt.client as mqtt
 import importlib
 import ssl
@@ -8,6 +9,7 @@ import logging
 from datapublisher import DataPublisher
 from datasubscriber import DataSubscriber
 import typedefines as types
+
 
 class IOTUnit:
     def __init__(self) -> None:
@@ -19,7 +21,7 @@ class IOTUnit:
         self.notifiers = {}
         self.publishers = {}
         self.subscribers = {}      
-        if self.client_cfg['use_certificates']:
+        if self.client_cfg['root_ca'] or self.client_cfg['client_certificate']  or self.client_cfg['client_key']  in self.client_cfg.keys():
             self.init_ssl_context()
         self.init_mqtt_connection()                                     #step 1 -> init iot client + init ssl context
         self.init_data_publishers(scheduler, unit_cfg['publishers'])    #step 2 -> init data publisher
@@ -29,9 +31,10 @@ class IOTUnit:
     
     def init_ssl_context(self):
         try:
+            print("y")
             self.ssl_context = ssl.create_default_context()
-            self.ssl_context.load_verify_locations(self.client_cfg['rootCA'])
-            self.ssl_context.load_cert_chain(self.client_cfg['clientCertificate'], self.client_cfg['clientKey'])
+            self.ssl_context.load_verify_locations(self.client_cfg['root_ca'])
+            self.ssl_context.load_cert_chain(self.client_cfg['client_certificate'], self.client_cfg['client_key'])
         except Exception:
             logging.error('init_ssl_context failed for %s', self.name)
             raise ValueError
@@ -40,7 +43,7 @@ class IOTUnit:
     def init_mqtt_connection(self):
         try:
             self.client = mqtt.Client()
-            if self.client_cfg['use_certificates']:
+            if self.client_cfg['root_ca'] in self.client_cfg.keys():
                 self.client.tls_set_context(self.ssl_context)
             self.client.connect(self.client_cfg['host'], self.client_cfg['port'])
         except Exception:
@@ -105,33 +108,3 @@ class IOTUnit:
     def process_request_threaded(self, req_func, payload, notifier_name_key):
         req_thread = threading.Thread(target = req_func, args=(self.registers, payload, self.notifiers[notifier_name_key].publish_notification))
         req_thread.start()
-
-class IOTUnitBuilder:
-    def __init__(self) -> None:
-        pass
-    def build_iot_unit(self, cfgFile):
-        iot_unit = IOTUnit()
-        #build_with_ssl_context(iot_unit, cfgfile[certificates])
-        #build_with_iot_client(iot_unit, cfgfile[client-mqtt])
-        #build_with_publishers(iot_unit, cfgfile[publishers])
-        #build_with_subscribers(iot_unit, cfgfile[subscriber])
-        #build_with_control_loop(iot_unit, cfgfile[control_loop])
-        return iot_unit
-    def build_with_ssl_context(self):
-        #TODO build ssl context step 1.a
-        pass
-    def build_with_iot_client(self):
-        #TODO build iot client step 1.b
-        pass
-    def build_with_publishers(self):
-        #TODO build iot publishers step 2
-        pass
-    def build_with_subscribers(self):
-        #TODO build iot subscribers step 3
-        pass
-    def build_with_control_loop(self):
-        #TODO build control loop step 4
-        pass
-
-
-#--> IoTUnit(empty) -> ssl_context() -> IoTUnit(sslcontext) -> iot_client() -> IoTUnit(sslcontext + iotclient) 

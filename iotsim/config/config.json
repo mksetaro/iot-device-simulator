@@ -1,0 +1,18 @@
+{
+    "logger": {
+        "file_path": "",
+        "verbosity": "INFO"
+    },
+    "client": {
+        "type": "mqtt",
+        "host": "localhost",
+        "port": 1883,
+        "root_ca": "",
+        "client_certificate": "",
+        "client_key": ""
+    },
+    "pods": {
+        "pods_list_file_path": "/home/michelangelo/Workspace/iot-device-simulator/examples/iotunits.json",
+        "pods_py_module_path": "/home/michelangelo/Workspace/iot-device-simulator/examples"
+    }
+}
