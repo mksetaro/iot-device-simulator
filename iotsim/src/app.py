@@ -3,16 +3,20 @@ import iotcontainer as iot
 import signal
 import time
 import argparse
+import os
+
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--config", help="Absolute path to <config>.json",
-                        action="store", default="")
+                        action="store", default=os.path.normpath(os.path.dirname(os.path.abspath(__file__)) + '/../config') + "/config.json")
     args = parser.parse_args()
     if not args.config:
         raise iot.ProgramKilled
     else:
         return args.config
+
+
 def main():
     json_config_file_path = parse_arguments()
 
