@@ -10,9 +10,10 @@ Install Python package in virtualenv
 python3 -m venv venv
 source venv/bin/activate
 pip install -e <path-to-project-root>
+python <path-to-iotsim>/config/generate_py_parameters.py #generate parameters code
 ```
 
-Adapt [config.json](iotsim/config/config.json) to your working environment
+create json config, use [config-default.json](iotsim/config/config-default.json) as template
 ```
 {
     "logger": {
