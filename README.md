@@ -10,28 +10,47 @@ Install Python package in virtualenv
 python3 -m venv venv
 source venv/bin/activate
 pip install -e <path-to-project-root>
+python <path-to-iotsim>/config/generate_py_parameters.py #generate parameters code
 ```
 
-Adapt [iotconfig.py](iotsim/config/iotconfig.py) to your working environment
+create json config, use [config-default.json](iotsim/config/config-default.json) as template
 ```
-logger ={'logFilePath': os.environ['HOME'] + '/iot_simulator.log',
-         'loggerLevel': logging.INFO}
-paths = {'simulator_root': os.environ['HOME'] + '/Workspace/iot-device-simulator',
-         'certificates_root_path': os.environ['HOME'] + '/certificates'}
-mqtt_client = { 'host':'localhost',
-                'port': 1883,
-                'use_certificates': False,
-                'rootCA': paths['certificates_root_path'] + '/ca_certificates/ca.crt',
-                'clientCertificate' : paths['certificates_root_path']  + '/client_certificates/client.crt',
-                'clientKey': paths['certificates_root_path']  + '/client_certificates/client.key'}
-mqtt_modules = { 'iotUnitList': paths['simulator_root'] + '/examples/iotunits.json',
-                 'modulesFolder': paths['simulator_root'] + '/examples/'}
+{
+    "logger": {
+        "file_path": "iot-container.log",
+        "verbosity": "DEBUG"
+    },
+    "client": {
+        "id": "test_client",
+        "type": "mqtt", #mqtt only client supported atm
+        "host": "localhost",
+        "port": 1883,
+        "root_ca": "",
+        "client_certificate": "",
+        "client_key": ""
+    },
+    "pods": {
+        "pods_list_file_path": "<path-to-pods-list.json>",
+        "pods_py_module_path": "<path-to-pods-py-modules>"
+    }
+}
 ```
 
 
 Run simulator
 ```
-python <path-to-project-root>/iotsim/src/app.py
+python <path-to-project-root>/iotsim/src/app.py --config <path-to-config.json>
+```
+if no argument are set the app will make use of the default config-default.json
+
+Run simulator as Docker container
+```
+docker build -t <image-name> <path-do-dockerfile-parent-folder>
+docker run --rm -d --network host --name <container-id> <image-name>
+```
+Read app log in docker container
+```
+docker exec -it <container-name> tail -f /workspace/iot-container.log
 ```
 
 ## Implement your own IoT Units
