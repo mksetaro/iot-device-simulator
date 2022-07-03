@@ -30,7 +30,7 @@ class DataPublisher:
 
     def publish(self):
         payload = self.owner.get_register_value(self.register_read_key)
-        self.owner.client.publish(self.topic, payload)
+        self.owner.client.get_client.publish(self.topic, payload)
     
     def publish_notification(self):
         notification_thread = threading.Thread(target = self.publish)

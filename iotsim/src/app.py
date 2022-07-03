@@ -13,7 +13,6 @@ def parse_arguments():
         raise iot.ProgramKilled
     else:
         return args.config
-
 def main():
     json_config_file_path = parse_arguments()
 

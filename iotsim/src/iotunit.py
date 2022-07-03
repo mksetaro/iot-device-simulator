@@ -14,41 +14,18 @@ import typedefines as types
 class IOTUnit:
     def __init__(self) -> None:
         pass   
-    def __init__(self, unit_cfg, mqtt_cfg, scheduler):
-        self.client_cfg = mqtt_cfg
+    def __init__(self, unit_cfg, client, scheduler):
+        self.client= client #to be improved with complete refactoring
         self.name = unit_cfg['name']
         self.registers = unit_cfg['registers']
         self.notifiers = {}
         self.publishers = {}
         self.subscribers = {}      
-        if self.client_cfg['root_ca'] or self.client_cfg['client_certificate']  or self.client_cfg['client_key']  in self.client_cfg.keys():
-            self.init_ssl_context()
-        self.init_mqtt_connection()                                     #step 1 -> init iot client + init ssl context
         self.init_data_publishers(scheduler, unit_cfg['publishers'])    #step 2 -> init data publisher
         if 'subscribers' in unit_cfg:                                   #step 3 -> init data subscriber
             self.init_data_subscribers(unit_cfg['subscribers'])         #step 4 -> init control loop
         self.init_control_loop(scheduler, unit_cfg)
     
-    def init_ssl_context(self):
-        try:
-            self.ssl_context = ssl.create_default_context()
-            self.ssl_context.load_verify_locations(self.client_cfg['root_ca'])
-            self.ssl_context.load_cert_chain(self.client_cfg['client_certificate'], self.client_cfg['client_key'])
-        except Exception:
-            logging.error('init_ssl_context failed for %s', self.name)
-            raise ValueError
-        logging.info('ssl_context created for %s', self.name)
-
-    def init_mqtt_connection(self):
-        try:
-            self.client = mqtt.Client()
-            if self.client_cfg['root_ca'] in self.client_cfg.keys():
-                self.client.tls_set_context(self.ssl_context)
-            self.client.connect(self.client_cfg['host'], self.client_cfg['port'])
-        except Exception:
-            logging.error("init_mqtt_connection failed for %s", self.name)
-            raise ValueError
-        logging.info('unit %(name)s successfully connected to broker %(host)s:%(port)s', {'name':self.name,'host':self.client_cfg['host'],'port':self.client_cfg['port']})
     def init_control_loop(self, scheduler, cfg):
         try:
             control_loop_module = cfg['control_loop_module']
@@ -91,13 +68,6 @@ class IOTUnit:
     def set_register_value(self, key, value):
         logging.debug("setting register %(key)s -> old value:%(oldV)s new value:%(newV)s",{'key':key, 'oldV':self.registers[key], 'newV':value})
         self.registers[key] = value
-
-    def start_mqtt_loop(self):
-        self.client.loop_start()
-    
-    def stop_mqtt_loop(self):
-        self.client.loop_stop()
-        self.client.disconnect()
 
     def control_loop_threaded(self, job_func):
         job_thread = threading.Thread(target = job_func, args=(self.registers,))
