@@ -1,7 +1,7 @@
 {
     "logger": {
         "file_path": "/home/michelangelo/iot-container.log",
-        "verbosity": "DEBUG"
+        "verbosity": "INFO"
     },
     "client": {
         "id": "test_client",
