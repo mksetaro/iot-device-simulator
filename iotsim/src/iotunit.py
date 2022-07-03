@@ -31,7 +31,6 @@ class IOTUnit:
     
     def init_ssl_context(self):
         try:
-            print("y")
             self.ssl_context = ssl.create_default_context()
             self.ssl_context.load_verify_locations(self.client_cfg['root_ca'])
             self.ssl_context.load_cert_chain(self.client_cfg['client_certificate'], self.client_cfg['client_key'])

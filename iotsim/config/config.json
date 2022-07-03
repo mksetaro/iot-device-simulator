@@ -1,6 +1,6 @@
 {
     "logger": {
-        "file_path": "",
+        "file_path": "/home/michelangelo/iot-container.log",
         "verbosity": "INFO"
     },
     "client": {
@@ -13,6 +13,6 @@
     },
     "pods": {
         "pods_list_file_path": "/home/michelangelo/Workspace/iot-device-simulator/examples/iotunits.json",
-        "pods_py_module_path": "/home/michelangelo/Workspace/iot-device-simulator/examples"
+        "pods_py_module_path": "/home/michelangelo/Workspace/iot-device-simulator/examples/"
     }
 }

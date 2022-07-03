@@ -7,21 +7,21 @@ import argparse
 def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--config", help="Absolute path to <config>.json",
-                    action="store", default="")
+                        action="store", default="")
     args = parser.parse_args()
     if not args.config:
         raise iot.ProgramKilled
     else:
         return args.config
+
 def main():
     json_config_file_path = parse_arguments()
-    
+
     container = iot.IOTContainer(json_config_file_path)
 
-    
     try:
         container.run()
-    
+
         while True:
             time.sleep(0.5)
 
@@ -29,6 +29,5 @@ def main():
         container.shutdown()
 
 
-if __name__== "__main__":
+if __name__ == "__main__":
     main()
-
