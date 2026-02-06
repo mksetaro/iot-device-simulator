@@ -1,5 +1,6 @@
-# IoT Device Simulator
 
+
+## IoT Device Simulator -> migrated [here](https://github.com/MockaSort-Studio/iot-device-simulator)
 
 Python IoT device simulator consisting of an IoT Container running units representing IoT devices defined in a json file (see [iotunits.json](examples/iotunits.json)), a smart elevator and a temperature sensor implementation can be found in the [examples](examples) folder.
 
